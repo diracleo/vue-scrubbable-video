@@ -1,7 +1,8 @@
 {
-  "name": "vue-scrubbable-video",
-  "version": "1.0.0",
-  "description": "",
+  "private": true,
+  "name": "@diracleo/vue-scrubbable-video",
+  "version": "0.0.1",
+  "description": "Allow a video to be scrubbed without any stuttering",
   "main": "dist/vue-scrubbable-video.ssr.js",
   "browser": "dist/vue-scrubbable-video.esm.js",
   "module": "dist/vue-scrubbable-video.esm.js",
@@ -45,5 +46,26 @@
   },
   "engines": {
     "node": ">=10"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/diracleo/vue-scrubbable-video.git"
+  },
+  "author": "Dane Iracleous",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/diracleo/vue-scrubbable-video/issues"
+  },
+  "homepage": "https://github.com/diracleo/vue-scrubbable-video#readme",
+  "keywords": [
+    "vue",
+    "vue-scrubbable-video",
+    "video scrubbing",
+    "video scrubber",
+    "scrubber",
+    "video scrolling",
+    "video scroller",
+    "video frames",
+    "scrubbing"
+  ]
 }
