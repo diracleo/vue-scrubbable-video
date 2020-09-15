@@ -26,12 +26,12 @@ export default Vue.extend({
     currentProgress: {
       type: Number,
       required: false,
-      default: null,
+      default: 0,
     },
     framesPerSecond: {
       type: Number,
       required: false,
-      default: 1,
+      default: 10,
     },
   },
   watch: { 

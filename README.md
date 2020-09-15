@@ -1,18 +1,20 @@
 # vue-scrubbable-video
 
-A Vue component that, when clicked, will enlarge an image from thumbnail to full version using a smooth animation.
+Have you ever tried to scrub through an HTML5 <video> element by dynamically changing its currentTime property, only to be disappointed by its slow performance and stuttering behavior?
+
+Have you ever wanted to mimic the smooth and responsive video scrubbing-by-scrollbar seen on the [Apple AirPods Pro Website](https://www.apple.com/airpods-pro/), but without the overhead of parsing out JPEG's from your videos and serving them frame-by-frame?
+
+Now you can! Simply replace your <video> element with a <scrubbable-video> component.
 
 ![](demo1.gif)
 
 ## Features
 
-  * Specify both a thumbnail source and a full size source
-  * Thumbnail version will load immediately
-  * Full version will load upon enlargement and is transformed seamlessly from the thumbnail version
-  * Specify the duration of the animation
-  * Nest any component or HTML element within - doesn't have to be just an img element (keep reading to learn more)
-  * Style the component however you want with your own CSS class definitions (keep reading to learn more)
-  * Choose whether the enlargement is triggered by click or hover
+  * Scrub through a video seamlessly without any stuttering
+  * Specifying sources is the same as with a normal <video> element
+  * Specify the frames-per-second to balance performance and quality
+  * Scrubbing is possible even before all frames have been generated
+  * Connect your own scrubbing controls or tether playback to a scrollbar
 
 ![](demo2.gif)
 
@@ -26,7 +28,7 @@ A Vue component that, when clicked, will enlarge an image from thumbnail to full
 
 ```bash
 
-$ npm install @diracleo/vue-enlargeable-image
+$ npm install @diracleo/vue-scrubbable-video
 
 ```
 
@@ -34,7 +36,7 @@ $ npm install @diracleo/vue-enlargeable-image
 
 ```html
 
-<script src="https://unpkg.com/@diracleo/vue-enlargeable-image/dist/vue-enlargeable-image.min.js"></script>
+<script src="https://unpkg.com/@diracleo/vue-scrubbable-video/dist/vue-scrubbable-video.min.js"></script>
 
 ```
 
@@ -46,9 +48,9 @@ main.js:
 
 import Vue from 'vue'
 import App from './App.vue'
-import EnlargeableImage from '@diracleo/vue-enlargeable-image';
+import ScrubbableVideo from '@diracleo/vue-scrubbable-video';
 
-Vue.use(EnlargeableImage)
+Vue.use(ScrubbableVideo)
 
 new Vue({
   el: 'body',
@@ -63,130 +65,31 @@ template:
 
 ```html
 
-<enlargeable-image src="/path/to/thumbnail.jpg" src_large="/path/to/fullsize.jpg" />
+<scrubbable-video :currentProgress="myVar" :framesPerSecond="10">
+  <source src="https://dane-iracleous-portfolio.s3-us-west-2.amazonaws.com/stock/jellyfish.mp4" type="video/mp4" />
+  <source src="https://dane-iracleous-portfolio.s3-us-west-2.amazonaws.com/stock/jellyfish.webm" type="video/webm" />
+</scrubbable-video>
 
 ```
 
-specifying that the enlargement occurs as a result of hover instead of click
+Note that in this example, you will need to dynamically populate the "myVar" variable with a value representing the scrub position of the video in percentage form (0 to 100). 
 
-```html
+[scrollmagic.io](https://scrollmagic.io/) is a great library if you want your video scrubbing to be controlled by a scrollbar.
 
-<enlargeable-image src="/path/to/thumbnail.jpg" src_large="/path/to/fullsize.jpg" trigger="hover" />
-
-```
-
-nesting a custom HTML element instead of the default img:
-
-```html
-
-<enlargeable-image src="/path/to/thumbnail.jpg" src_large="/path/to/fullsize.jpg">
-  <span>Click me to see the image</span>
-</enlargeable-image>
-
-```
-
-nesting another component instead of the default img (and setting the animation duration):
-
-```html
-
-<enlargeable-image src="/path/to/thumbnail.jpg" src_large="/path/to/fullsize.jpg" animation_duration="2000">
-  <v-lazy-image src="/path/to/thumbnail.jpg" />
-</enlargeable-image>
-
-```
+[Slider HTML Input](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/range) can be used if you're looking for a more traditional scrubbing controller. 
 
 ## Properties
 
 | Property           | Type                        | Default           | Required | Description                              |
 | ------------------ | --------------------------- | ----------------- | -------- | ---------------------------------------- |
-| src                | String                      | N/A               | *yes*    | Relative path or absolute URL to the thumbnail image                                            |
-| src_large          | String                      | N/A               | *yes*    | Relative path or absolute URL to the full size image                                            |
-| animation_duration | Integer                     | 700               | *no*     | How many milliseconds that the enlarging and delarging animation will take (0 for no animation) |
-| trigger            | String ("click" or "hover") | click             | *no*     | Type of user interaction that triggers the enlargement (currently "click" or "hover")           |
+| currentProgress    | Number (min: 0, max: 100)   | 0                 | *no*     | Percentage-based current scrubbed position   |
+| framesPerSecond    | Number (min: 0)             | 10                | *no*     | Granularity of frame-snapshotting            |
 
 
 ## Events
 
-| Name          | Arguments                                | Description                               |
-| ------------- | ---------------------------------------- | ----------------------------------------- |
-| **enlarging** | None                                     | Fired when image starts to get bigger     |
-| **enlarged**  | None                                     | Fired when image has reached full size    |
-| **delarging** | None                                     | Fired when image starts to get smaller    | 
-| **delarged**  | None                                     | Fired when image is back to original size |
-
-
-## Styling the component
-
-```CSS
-
-/* your passed-in element */
-.enlargeable-image > .slot {
-  display:inline-block;
-  max-width:100%;
-  max-height:100%;
-  cursor:zoom-in;
-}
-/* default img if no element passed in */
-.enlargeable-image > .slot > img.default {
-  max-width:100%;
-  vertical-align:middle;
-}
-/* passed-in element when growth is happening */
-.enlargeable-image.active > .slot {
-  opacity:0.3;
-  filter:grayscale(100%);
-}
-/* full version that grows (background image allows seamless transition from thumbnail to full) */
-.enlargeable-image .full {
-  cursor:zoom-out;
-  background-color:transparent;
-  align-items:center;
-  justify-content:center;
-  background-position: center center;
-  background-repeat:no-repeat;
-  background-size:contain;
-  display:none;
-}
-.enlargeable-image .full > img {
-  object-fit:contain;
-  width:100%;
-  height:100%;
-}
-/* full version while getting bigger */
-.enlargeable-image .full.enlarging {
-  display:flex;
-  position:fixed;
-  left:0px;
-  top:0px;
-  width:100%;
-  height:100%;
-  background-color:transparent;
-  cursor:zoom-out;
-  z-index:3;
-}
-/* full version while at its peak size */
-.enlargeable-image .full.enlarged {
-  display:flex;
-  position:fixed;
-  left:0px;
-  top:0px;
-  width:100%;
-  height:100%;
-  background-color:transparent;
-  cursor:zoom-out;
-  z-index:2;
-}
-/* full version while getting smaller */
-.enlargeable-image .full.delarging {
-  display:flex;
-  position:fixed;
-  left:0px;
-  top:0px;
-  width:100%;
-  height:100%;
-  background-color:transparent;
-  cursor:zoom-in;
-  z-index:1;
-}
-
-```
+| Name                  | Arguments                                | Description                                          |
+| --------------------- | ---------------------------------------- | ---------------------------------------------------- |
+| **frame-unavailable** | None                                     | Fired when an unready frame has been scrubbed-to     |
+| **frames-generating** | None                                     | Fired when frame generating has begun                |
+| **frames-ready**      | None                                     | Fired when all frames have been generated            | 

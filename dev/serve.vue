@@ -33,7 +33,7 @@ export default Vue.extend({
   <div id="app" @scroll="scroll" ref="app">
     <div ref="inner">
       <div id="scrubber">
-        <scrubbable-video :currentProgress="total" :framesPerSecond="10" @frames-generating="outputEvent('frames generating')" @frames-ready="outputEvent('all frames ready')" @frame-unavailable="outputEvent('attempt to display unready frame')">
+        <scrubbable-video :currentProgress="total" :framesPerSecond="4" @frames-generating="outputEvent('frames generating')" @frames-ready="outputEvent('all frames ready')" @frame-unavailable="outputEvent('attempt to display unready frame')">
           <source src="https://dane-iracleous-portfolio.s3-us-west-2.amazonaws.com/stock/jellyfish.mp4" type="video/mp4" />
           <source src="https://dane-iracleous-portfolio.s3-us-west-2.amazonaws.com/stock/jellyfish.webm" type="video/webm" />
         </scrubbable-video>
