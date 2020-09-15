@@ -1,17 +1,17 @@
 # vue-scrubbable-video
 
-Have you ever tried to scrub through an HTML5 <video> element by dynamically changing its currentTime property, only to be disappointed by its slow performance and stuttering behavior?
+Have you ever tried to scrub through an HTML5 `<video>` element by dynamically changing its currentTime property, only to be disappointed by its slow performance and stuttering behavior?
 
 Have you ever wanted to mimic the smooth and responsive video scrubbing-by-scrollbar seen on the [Apple AirPods Pro Website](https://www.apple.com/airpods-pro/), but without the overhead of parsing out JPEG's from your videos and serving them frame-by-frame?
 
-Now you can! Simply replace your <video> element with a <scrubbable-video> component.
+Now you can! Simply replace your `<video>` element with a `<scrubbable-video>` component.
 
 ![](demo1.gif)
 
 ## Features
 
   * Scrub through a video seamlessly without any stuttering
-  * Specifying sources is the same as with a normal <video> element
+  * Specifying sources is the same as with a normal `<video>` element
   * Specify the frames-per-second to balance performance and quality
   * Scrubbing is possible even before all frames have been generated
   * Connect your own scrubbing controls or tether playback to a scrollbar
@@ -66,8 +66,8 @@ template:
 ```html
 
 <scrubbable-video :currentProgress="myVar" :framesPerSecond="10">
-  <source src="https://dane-iracleous-portfolio.s3-us-west-2.amazonaws.com/stock/jellyfish.mp4" type="video/mp4" />
-  <source src="https://dane-iracleous-portfolio.s3-us-west-2.amazonaws.com/stock/jellyfish.webm" type="video/webm" />
+  <source src="/path/to/your/video.mp4" type="video/mp4" />
+  <source src="/path/to/your/video.webm" type="video/webm" />
 </scrubbable-video>
 
 ```
