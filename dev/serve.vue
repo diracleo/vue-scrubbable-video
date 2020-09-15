@@ -18,8 +18,12 @@ export default Vue.extend({
     },
   },
   methods: {
-    outputEvent(str: String) {
-      console.log(str);
+    outputEvent(str: String, arg1) {
+      let out = str;
+      if(typeof(arg1) != 'undefined') {
+        out += " at position "+arg1+"%";
+      }
+      console.log(out);
     },
     scroll() {
       var tmp = this.$refs.app.scrollTop / (this.$refs.inner.offsetHeight - this.$refs.app.offsetHeight) * 100;
@@ -33,11 +37,16 @@ export default Vue.extend({
   <div id="app" @scroll="scroll" ref="app">
     <div ref="inner">
       <div id="scrubber">
-        <scrubbable-video :currentProgress="total" :framesPerSecond="4" @frames-generating="outputEvent('frames generating')" @frames-ready="outputEvent('all frames ready')" @frame-unavailable="outputEvent('attempt to display unready frame')">
+        <scrubbable-video :currentProgress="total" :framesPerSecond="10" 
+          @frames-generating="outputEvent('frames generating')" 
+          @frames-ready="outputEvent('all frames ready')" 
+          @frame-shown="outputEvent('showing frame', $event)"
+          @frame-unavailable="outputEvent('attempt to display unready frame', $event)"
+          @frame-ready="outputEvent('frame is ready', $event)">
           <source src="https://dane-iracleous-portfolio.s3-us-west-2.amazonaws.com/stock/jellyfish.mp4" type="video/mp4" />
           <source src="https://dane-iracleous-portfolio.s3-us-west-2.amazonaws.com/stock/jellyfish.webm" type="video/webm" />
         </scrubbable-video>
-        <input type="range" min="0" max="100" value="0" class="slider" id="myRange" v-model="value" />
+        <input type="range" min="0" max="100" value="0" class="slider" id="myRange" v-model="value" step="0.1" />
       </div>
     </div>
   </div>

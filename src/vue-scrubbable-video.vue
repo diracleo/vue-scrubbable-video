@@ -1,3 +1,8 @@
+<!--
+  Author: Dane Iracleous <daneiracleous@gmail.com>
+  Repository: https://github.com/diracleo/vue-scrubbable-video
+-->
+
 <script lang="ts">
 import Vue from 'vue';
 
@@ -10,16 +15,24 @@ interface ScrubData {
   interval: number,
 }
 
+interface Frame {
+  ready: boolean
+}
+
+interface Frames {
+  [key: string]: Frame
+}
+
 export default Vue.extend({
   name: 'ScrubbableVideo',
   data(): ScrubData {
     return {
-      width: this.width,
-      height: this.height,
-      duration: this.duration,
-      frames: this.frames,
-      currentIndex: this.currentIndex,
-      interval: this.interval,
+      width: 0,
+      height: 0,
+      duration: 0,
+      frames: {},
+      currentIndex: "0",
+      interval: 0,
     };
   },
   props: {
@@ -41,8 +54,9 @@ export default Vue.extend({
 
       if(typeof(self.frames[tmp]) != 'undefined' && self.frames[tmp]['ready']) {
         self.currentIndex = tmp;
+        self.$emit("frame-shown", val, tmp);
       } else {
-        self.$emit("frame-unavailable");
+        self.$emit("frame-unavailable", val, tmp);
       }
     }
   },
@@ -53,7 +67,7 @@ export default Vue.extend({
   methods: {
     init():void {
       let self = this;
-      self.frames = {};
+      self.frames = {} as Frames;
       self.width = 0;
       self.height = 0;
       let tmp = 1 / self.$props.framesPerSecond;
@@ -81,52 +95,54 @@ export default Vue.extend({
       });
     },
     async generateFrames() {
+      //adapted from https://stackoverflow.com/questions/32699721/javascript-extract-video-frames-reliably/32708998
       return new Promise(async (resolve) => {
         let self = this;
-
         let seekResolve;
-        self.$refs.video.addEventListener('seeked', async function() {
+        let video = self.$refs.video as HTMLVideoElement;
+        video.addEventListener('seeked', async function() {
           if(seekResolve) {
             seekResolve();
           }
         });
 
         // workaround chromium metadata bug (https://stackoverflow.com/q/38062864/993683)
-        while((self.$refs.video.duration === Infinity || isNaN(self.$refs.video.duration)) && self.$refs.video.readyState < 2) {
+        while((video.duration === Infinity || isNaN(video.duration)) && video.readyState < 2) {
           await new Promise(r => setTimeout(r, 1000));
-          self.$refs.video.currentTime = 10000000*Math.random();
+          video.currentTime = 10000000*Math.random();
         }
 
-        self.width = self.$refs.video.offsetWidth;
-        self.height = self.$refs.video.offsetHeight;
-        self.duration = self.$refs.video.duration;
+        self.width = video.offsetWidth;
+        self.height = video.offsetHeight;
+        self.duration = video.duration;
 
         self.currentIndex = self.convertProgressToTime(self.$props.currentProgress).toString();
 
         let currentTime = 0;
         while(currentTime < self.duration) {
           currentTime = parseFloat(currentTime.toFixed(2));
+          let k = currentTime.toString();
           self.frames[currentTime.toString()] = {
             "ready": false
-          };
+          } as Frame;
           currentTime += self.interval;
         }
-
-        //console.log(self.frames);
 
         self.$forceUpdate();
 
         self.$nextTick(async() => {
           currentTime = 0;
           for(let index in self.frames) {
-            self.$refs.video.currentTime = parseFloat(index);
+            video.currentTime = parseFloat(index);
             await new Promise(r => seekResolve=r);
             let canvas = self.$refs[`frame_${index}`];
-            if(typeof(canvas[0]) != 'undefined' && typeof(canvas[0].getContext) != 'undefined') {
-              canvas = canvas[0];
+            canvas = canvas[0] as HTMLCanvasElement;
+            if(typeof(canvas) != 'undefined' && typeof(canvas.getContext) != 'undefined') {
               let context = canvas.getContext('2d');
-              context.drawImage(self.$refs.video, 0, 0, self.width, self.height);
+              context.drawImage(video, 0, 0, self.width, self.height);
               self.frames[index]['ready'] = true;
+              let percent = parseFloat(index) / self.duration * 100;
+              self.$emit("frame-ready", percent.toFixed(2), index);
             }
           }
           return resolve();

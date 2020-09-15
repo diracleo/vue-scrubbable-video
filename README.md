@@ -90,6 +90,8 @@ Note that in this example, you will need to dynamically populate the "myVar" var
 
 | Name                  | Arguments                                | Description                                          |
 | --------------------- | ---------------------------------------- | ---------------------------------------------------- |
-| **frame-unavailable** | None                                     | Fired when an unready frame has been scrubbed-to     |
+| **frame-unavailable** | Number                                   | Fired when an unready frame has been scrubbed-to     |
+| **frame-shown**       | Number                                   | Fired when a ready frame has been scrubbed-to        |
 | **frames-generating** | None                                     | Fired when frame generating has begun                |
+| **frame-ready**       | Number                                   | Fired when a frame has been generated                | 
 | **frames-ready**      | None                                     | Fired when all frames have been generated            | 
