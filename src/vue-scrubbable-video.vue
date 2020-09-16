@@ -15,12 +15,12 @@ interface ScrubData {
   interval: number,
 }
 
-interface Frame {
+interface IFrame {
   ready: boolean
 }
 
-interface Frames {
-  [key: string]: Frame
+interface IFrames {
+  [key: string]: IFrame
 }
 
 export default Vue.extend({
@@ -67,7 +67,7 @@ export default Vue.extend({
   methods: {
     init():void {
       let self = this;
-      self.frames = {} as Frames;
+      self.frames = {} as IFrames;
       self.width = 0;
       self.height = 0;
       let tmp = 1 / self.$props.framesPerSecond;
@@ -122,9 +122,9 @@ export default Vue.extend({
         while(currentTime < self.duration) {
           currentTime = parseFloat(currentTime.toFixed(2));
           let k = currentTime.toString();
-          self.frames[currentTime.toString()] = {
-            "ready": false
-          } as Frame;
+          self.frames[k] = {
+            'ready': false
+          } as IFrame;
           currentTime += self.interval;
         }
 

@@ -37,7 +37,7 @@ export default Vue.extend({
   <div id="app" @scroll="scroll" ref="app">
     <div ref="inner">
       <div id="scrubber">
-        <scrubbable-video :currentProgress="total" :framesPerSecond="10" 
+        <scrubbable-video :currentProgress="total" :framesPerSecond="5" 
           @frames-generating="outputEvent('frames generating')" 
           @frames-ready="outputEvent('all frames ready')" 
           @frame-shown="outputEvent('showing frame', $event)"
@@ -46,7 +46,7 @@ export default Vue.extend({
           <source src="https://dane-iracleous-portfolio.s3-us-west-2.amazonaws.com/stock/jellyfish.mp4" type="video/mp4" />
           <source src="https://dane-iracleous-portfolio.s3-us-west-2.amazonaws.com/stock/jellyfish.webm" type="video/webm" />
         </scrubbable-video>
-        <input type="range" min="0" max="100" value="0" class="slider" id="myRange" v-model="value" step="0.1" />
+        <input type="range" min="0" max="100" value="0" class="slider" id="myRange" v-model="value" step="0.01" />
       </div>
     </div>
   </div>
