@@ -1,7 +1,7 @@
 {
   "private": false,
   "name": "@diracleo/vue-scrubbable-video",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Allow a video to be scrubbed without any stuttering",
   "main": "dist/vue-scrubbable-video.ssr.js",
   "browser": "dist/vue-scrubbable-video.esm.js",
