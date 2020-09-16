@@ -16,7 +16,8 @@ interface ScrubData {
 }
 
 interface IFrame {
-  ready: boolean
+  status: string;
+  time: number;
 }
 
 interface IFrames {
@@ -46,13 +47,23 @@ export default Vue.extend({
       required: false,
       default: 10,
     },
+    start: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
+    end: {
+      type: Number,
+      required: false,
+      default: -1,
+    },
   },
   watch: { 
     currentProgress: function(val) {
       let self = this;
       let tmp = self.convertProgressToTime(val).toString();
 
-      if(typeof(self.frames[tmp]) != 'undefined' && self.frames[tmp]['ready']) {
+      if(typeof(self.frames[tmp]) != 'undefined' && self.frames[tmp]['status'] == "ready") {
         self.currentIndex = tmp;
         self.$emit("frame-shown", val, tmp);
       } else {
@@ -72,7 +83,7 @@ export default Vue.extend({
       self.height = 0;
       let tmp = 1 / self.$props.framesPerSecond;
       self.interval = parseFloat(tmp.toFixed(2));
-      self.currentIndex = "0";
+      self.currentIndex = "-1";
     },
     convertProgressToTime(progress: number) {
       let self = this;
@@ -87,19 +98,20 @@ export default Vue.extend({
       tmp = parseFloat(tmp.toFixed(2));
       return tmp;
     },
-    generate() {
+    generate(event: Event) {
       let self = this;
       self.$emit("frames-generating");
-      self.generateFrames().then(() => {
+      self.generateFrames(event.target as HTMLVideoElement).then(() => {
         self.$emit("frames-ready");
       });
     },
-    async generateFrames() {
+    async generateFrames(video: HTMLVideoElement) {
       //adapted from https://stackoverflow.com/questions/32699721/javascript-extract-video-frames-reliably/32708998
       return new Promise(async (resolve) => {
         let self = this;
         let seekResolve;
-        let video = self.$refs.video as HTMLVideoElement;
+        let currentTime;
+        //let video = self.$refs.video as HTMLVideoElement;
         video.addEventListener('seeked', async function() {
           if(seekResolve) {
             seekResolve();
@@ -116,16 +128,30 @@ export default Vue.extend({
         self.height = video.offsetHeight;
         self.duration = video.duration;
 
+        let end = self.duration;
+        if(self.$props.end != -1 && self.$props.end < self.duration) {
+          end = self.$props.end;
+          self.duration = end - self.$props.start;
+        } else {
+          self.duration -= self.$props.start;
+        }
+
         self.currentIndex = self.convertProgressToTime(self.$props.currentProgress).toString();
 
-        let currentTime = 0;
-        while(currentTime < self.duration) {
+        currentTime = self.$props.start;
+        let currentProgress = 0;
+        while(currentTime < end) {
           currentTime = parseFloat(currentTime.toFixed(2));
-          let k = currentTime.toString();
-          self.frames[k] = {
-            'ready': false
-          } as IFrame;
+          currentProgress = parseFloat(currentProgress.toFixed(2));
+          let k = currentProgress.toString();
+          if(typeof(self.frames[k]) == 'undefined') {
+            self.frames[k] = {
+              'status': "unready",
+              "time": currentTime
+            } as IFrame;
+          }
           currentTime += self.interval;
+          currentProgress += self.interval;
         }
 
         self.$forceUpdate();
@@ -133,16 +159,19 @@ export default Vue.extend({
         self.$nextTick(async() => {
           currentTime = 0;
           for(let index in self.frames) {
-            video.currentTime = parseFloat(index);
-            await new Promise(r => seekResolve=r);
-            let canvas = self.$refs[`frame_${index}`];
-            canvas = canvas[0] as HTMLCanvasElement;
-            if(typeof(canvas) != 'undefined' && typeof(canvas.getContext) != 'undefined') {
-              let context = canvas.getContext('2d');
-              context.drawImage(video, 0, 0, self.width, self.height);
-              self.frames[index]['ready'] = true;
-              let percent = parseFloat(index) / self.duration * 100;
-              self.$emit("frame-ready", percent.toFixed(2), index);
+            if(self.frames[index]['status'] == "unready") {
+              self.frames[index]['status'] = "locked";
+              video.currentTime = self.frames[index]['time'];
+              await new Promise(r => seekResolve=r);
+              let canvas = self.$refs[`frame_${index}`];
+              canvas = canvas[0] as HTMLCanvasElement;
+              if(typeof(canvas) != 'undefined' && typeof(canvas.getContext) != 'undefined') {
+                let context = canvas.getContext('2d');
+                context.drawImage(video, 0, 0, self.width, self.height);
+                self.frames[index]['status'] = "ready";
+                let percent = parseFloat(index) / self.duration * 100;
+                self.$emit("frame-ready", percent.toFixed(2), index);
+              }
             }
           }
           return resolve();
@@ -155,7 +184,7 @@ export default Vue.extend({
 
 <template>
   <div class="vue-scrubbable-video">
-    <video ref="video" muted @loadedmetadata="generate">
+    <video muted @loadedmetadata="generate($event)">
       <slot />
     </video>
     <canvas :width="width" :height="height" v-for="(frame, index) in frames" :key="`frame_${index}`" :ref="`frame_${index}`" v-bind:class="{ active: currentIndex == index }"></canvas>
@@ -174,6 +203,7 @@ export default Vue.extend({
   .vue-scrubbable-video > canvas {
     position:absolute;
     display:none;
+    width:100%;
     left:0px;
     top:0px;
   }

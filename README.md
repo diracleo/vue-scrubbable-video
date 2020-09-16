@@ -11,8 +11,9 @@ Now you can! Simply replace your `<video>` element with a `<scrubbable-video>` c
 ## Features
 
   * Scrub through a video seamlessly without any stuttering
-  * Specifying sources is the same as with a normal `<video>` element
+  * Specify sources the same way as with a standard `<video>` element
   * Specify the frames-per-second to balance performance and quality
+  * Specify a start and end time to use only a segment of a video
   * Scrubbing is possible even before all frames have been generated
   * Connect your own scrubbing controls or tether playback to a scrollbar
 
@@ -84,6 +85,8 @@ Note that in this example, you will need to dynamically populate the "myVar" var
 | ------------------ | --------------------------- | ----------------- | -------- | ---------------------------------------- |
 | currentProgress    | Number (min: 0, max: 100)   | 0                 | *no*     | Percentage-based current scrubbed position   |
 | framesPerSecond    | Number (min: 0)             | 10                | *no*     | Granularity of frame-snapshotting            |
+| start              | Number (min: 0)             | 0                 | *no*     | Where, in seconds, the segement will start   |
+| end                | Number (min: 0)             | Infinity          | *no*     | Where, in seconds, the segement will end     |
 
 
 ## Events

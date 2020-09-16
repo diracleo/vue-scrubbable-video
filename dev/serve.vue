@@ -37,7 +37,7 @@ export default Vue.extend({
   <div id="app" @scroll="scroll" ref="app">
     <div ref="inner">
       <div id="scrubber">
-        <scrubbable-video :currentProgress="total" :framesPerSecond="5" 
+        <scrubbable-video :currentProgress="total" :framesPerSecond="14" :start="24" :end="50"
           @frames-generating="outputEvent('frames generating')" 
           @frames-ready="outputEvent('all frames ready')" 
           @frame-shown="outputEvent('showing frame', $event)"
