@@ -8,6 +8,8 @@ Now you can! Simply replace your `<video>` element with a `<scrubbable-video>` c
 
 ![](demo1.gif)
 
+[CodePen Demo](https://codepen.io/diracleo/pen/KKzBYgQ)
+
 ## Features
 
   * Scrub through a video seamlessly without any stuttering
@@ -66,7 +68,7 @@ template:
 
 ```html
 
-<scrubbable-video :currentProgress="myVar" :framesPerSecond="10">
+<scrubbable-video :current-progress="myVar" :frames-per-second="10">
   <source src="/path/to/your/video.mp4" type="video/mp4" />
   <source src="/path/to/your/video.webm" type="video/webm" />
 </scrubbable-video>
@@ -83,8 +85,8 @@ Note that in this example, you will need to dynamically populate the "myVar" var
 
 | Property           | Type                        | Default           | Required | Description                              |
 | ------------------ | --------------------------- | ----------------- | -------- | ---------------------------------------- |
-| currentProgress    | Number (min: 0, max: 100)   | 0                 | *no*     | Percentage-based current scrubbed position   |
-| framesPerSecond    | Number (min: 0)             | 10                | *no*     | Granularity of frame-snapshotting            |
+| current-progress   | Number (min: 0, max: 100)   | 0                 | *no*     | Percentage-based current scrubbed position   |
+| frames-per-second  | Number (min: 0)             | 10                | *no*     | Granularity of frame-snapshotting            |
 | start              | Number (min: 0)             | 0                 | *no*     | Where, in seconds, the segement will start   |
 | end                | Number (min: 0)             | Infinity          | *no*     | Where, in seconds, the segement will end     |
 
