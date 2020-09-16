@@ -194,11 +194,13 @@ export default Vue.extend({
 <style scoped>
   .vue-scrubbable-video {
     position:relative;
+    pointer-events:none;
   }
   .vue-scrubbable-video > video {
     max-width:100%;
     visibility:hidden;
     opacity:0;
+    pointer-events:none;
   }
   .vue-scrubbable-video > canvas {
     position:absolute;
@@ -206,6 +208,7 @@ export default Vue.extend({
     width:100%;
     left:0px;
     top:0px;
+    pointer-events:none;
   }
   .vue-scrubbable-video > canvas.active {
     display:block;

@@ -6,9 +6,9 @@ Have you ever wanted to mimic the smooth and responsive video scrubbing-by-scrol
 
 Now you can! Simply replace your `<video>` element with a `<scrubbable-video>` component.
 
-![](demo1.gif)
-
 [CodePen Demo](https://codepen.io/diracleo/pen/KKzBYgQ)
+
+![](demo1.gif)
 
 ## Features
 
