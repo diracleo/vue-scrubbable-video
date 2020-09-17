@@ -4,7 +4,19 @@ Have you ever tried to scrub through an HTML5 `<video>` element by dynamically c
 
 Have you ever wanted to mimic the smooth and responsive video scrubbing-by-scrollbar seen on the [Apple AirPods Pro Website](https://www.apple.com/airpods-pro/), but without the overhead of parsing out JPEG's from your videos and serving them frame-by-frame?
 
-Now you can! Simply replace your `<video>` element with a `<scrubbable-video>` component.
+Maybe you've come across this [Reddit discussion](https://www.reddit.com/r/webdev/comments/2krge1/codepens_killer_html5_video_scrolling_controls_w/cq4ndwo?utm_source=share&utm_medium=web2x&context=3) featuring user [markteater](https://www.reddit.com/user/markteater/) who discovered that in order for a video to be scrubbed smoothly, it needs to be encoded with each frame as a keyframe, like this:
+
+```bash
+
+ffmpeg -r 30 -i input.mp4 -vcodec libx264 -crf 15 -g 1 -pix_fmt yuv420p output.mp4
+
+```
+
+Maybe that was your answer. But if you don't want to re-encode your videos with FFMPEG, keep reading. 
+
+This component will, in real time, generate snapshots at every frame of your video and output them as canvases which are then shown or hidden depending on scrub position. 
+
+Simply replace your `<video>` element with a `<scrubbable-video>` component.
 
 [CodePen Demo](https://codepen.io/diracleo/pen/KKzBYgQ)
 
@@ -31,7 +43,7 @@ Now you can! Simply replace your `<video>` element with a `<scrubbable-video>` c
 
 ```bash
 
-$ npm install @diracleo/vue-scrubbable-video
+npm install @diracleo/vue-scrubbable-video
 
 ```
 
