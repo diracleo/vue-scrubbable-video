@@ -29,7 +29,7 @@ Simply replace your `<video>` element with a `<scrubbable-video>` component.
   * Specify the frames-per-second to balance performance and quality
   * Specify a start and end time to use only a segment of a video
   * Scrubbing is possible even before all frames have been generated
-  * Connect your own scrubbing controls or tether playback to a scrollbar
+  * Connect your own scrubbing controller or tether playback to a scrollbar
 
 ![](demo2.gif)
 
@@ -57,7 +57,7 @@ npm install @diracleo/vue-scrubbable-video
 
 ## Usage
 
-main.js:
+### javascript
 
 ```javascript
 
@@ -76,7 +76,7 @@ new Vue({
 
 ```
 
-template:
+### template
 
 ```html
 
@@ -87,20 +87,20 @@ template:
 
 ```
 
-Note that in this example, you will need to dynamically populate the "myVar" variable with a value representing the scrub position of the video in percentage form (0 to 100). 
+*In this example, you will need to set the value of the "myVar" as a number representing the scrub position of the video in percentage form (0 to 100). A typical use case would involve providing this variable as the [v-model](https://vuejs.org/v2/guide/forms.html#number) of a [Slider HTML Input](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/range)*
 
-[scrollmagic.io](https://scrollmagic.io/) is a great library if you want your video scrubbing to be controlled by a scrollbar.
+*If you are using the component from the externally-included script instead of the modular form, the component name will be `<vue-scrubbable-video>` instead of `<scrubbable-video>`. See the [CodePen Demo](https://codepen.io/diracleo/pen/KKzBYgQ) for an example of this type of usage.*
 
-[Slider HTML Input](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/range) can be used if you're looking for a more traditional scrubbing controller. 
+[scrollmagic.io](https://scrollmagic.io/) is a great library if you want your video scrubbing to be controlled by a scrollbar. The [CodePen Demo](https://codepen.io/diracleo/pen/KKzBYgQ) is an example of this integration.
 
 ## Properties
 
 | Property           | Type                        | Default           | Required | Description                              |
 | ------------------ | --------------------------- | ----------------- | -------- | ---------------------------------------- |
-| current-progress   | Number (min: 0, max: 100)   | 0                 | *no*     | Percentage-based current scrubbed position   |
-| frames-per-second  | Number (min: 0)             | 10                | *no*     | Granularity of frame-snapshotting            |
-| start              | Number (min: 0)             | 0                 | *no*     | Where, in seconds, the segement will start   |
-| end                | Number (min: 0)             | Infinity          | *no*     | Where, in seconds, the segement will end     |
+| current-progress   | Number (min: 0, max: 100)   | 0                 | *no*     | Percentage-based current scrubbed position                             |
+| frames-per-second  | Number (min: 0)             | 10                | *no*     | Granularity of frame-snapshotting                                      |
+| start              | Number (min: 0)             | 0                 | *no*     | Where, in seconds, the segment will start (omit to use entire video)   |
+| end                | Number (min: start)         | duration of video | *no*     | Where, in seconds, the segment will end (omit to use entire video)     |
 
 
 ## Events
